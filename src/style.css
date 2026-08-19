@@ -1,0 +1,137 @@
+:root {
+  color: #1d2a27;
+  background: #f2f5ef;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 48px 20px;
+  background:
+    radial-gradient(circle at 15% 12%, rgb(255 207 117 / 28%), transparent 28%),
+    radial-gradient(circle at 85% 82%, rgb(83 183 146 / 22%), transparent 30%),
+    #f2f5ef;
+}
+
+.app {
+  width: min(100%, 680px);
+  margin: 0 auto;
+  padding: 40px;
+  background: rgb(255 253 248 / 94%);
+  border: 1px solid rgb(255 255 255 / 80%);
+  border-radius: 28px;
+  box-shadow: 0 22px 60px rgb(40 61 53 / 12%);
+}
+
+.app__header {
+  padding-bottom: 32px;
+  border-bottom: 1px solid #dce5df;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #177a5b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 6px;
+  font-size: clamp(2rem, 8vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.subtitle {
+  margin-bottom: 0;
+  color: #687773;
+}
+
+.task-section {
+  padding-top: 26px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-heading h2 {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.section-heading span {
+  color: #687773;
+  font-size: 0.82rem;
+}
+
+.task-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 62px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #dce5df;
+  border-radius: 14px;
+}
+
+.task__mark {
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: #fff;
+  background: #fff;
+  border: 2px solid #b8c7c1;
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.task--done .task__mark {
+  background: #177a5b;
+  border-color: #177a5b;
+}
+
+.task--done .task__title {
+  color: #8a9692;
+  text-decoration: line-through;
+}
+
+@media (width <= 560px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  .app {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+}
