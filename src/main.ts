@@ -44,6 +44,11 @@ function createTaskElement(task: Task): HTMLLIElement {
 
   item.append(mark, title);
 
+  item.addEventListener("click", () => {
+    task.done = !task.done;
+    renderTasks(tasks);
+  });
+
   return item;
 }
 
@@ -83,4 +88,33 @@ app.innerHTML = `
     </section>
   </main>
 `;
+
+const taskForm = document.querySelector<HTMLFormElement>(".task-form");
+const taskInput = document.querySelector<HTMLInputElement>("#task-input");
+if (taskForm === null || taskInput === null) {
+  throw new Error("フォームまたは入力欄が見つかりません。");
+}
+
+taskForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const title = taskInput.value.trim();
+  if (title === "") {
+    return;
+  }
+
+  const newTask: Task = {
+    id: crypto.randomUUID(),
+    title,
+    done: false,
+    createdAt: new Date().toISOString(),
+  };
+
+  tasks.push(newTask);
+  renderTasks(tasks);
+
+  taskInput.value = "";
+  taskInput.focus();
+});
+
 renderTasks(tasks);
