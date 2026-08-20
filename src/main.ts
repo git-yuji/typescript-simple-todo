@@ -30,6 +30,17 @@ if (app === null) {
   throw new Error("#app が見つかりません。");
 }
 
+function deleteTask(taskId: string): void {
+  const taskIndex = tasks.findIndex((task) => task.id === taskId);
+
+  if (taskIndex === -1) {
+    return;
+  }
+
+  tasks.splice(taskIndex, 1);
+  renderTasks(tasks);
+}
+
 function createTaskElement(task: Task): HTMLLIElement {
   const item = document.createElement("li");
   item.className = task.done ? "task task--done" : "task";
@@ -42,7 +53,17 @@ function createTaskElement(task: Task): HTMLLIElement {
   title.className = "task__title";
   title.textContent = task.title;
 
-  item.append(mark, title);
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "task__delete";
+  deleteButton.type = "button";
+  deleteButton.textContent = "削除";
+
+  deleteButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    deleteTask(task.id);
+  });
+
+  item.append(mark, title, deleteButton);
 
   item.addEventListener("click", () => {
     task.done = !task.done;
