@@ -2,8 +2,8 @@ import "./style.css";
 import type { Task } from "./task.ts";
 
 // Task[] は「Task型の値だけを入れられる配列」という意味です。
-// まずは保存機能を使わず、固定データの描画から始めます。
-const tasks: Task[] = [
+// 保存データがない場合は、次の初期タスクを表示します。
+const initialTasks: Task[] = [
   {
     id: "1",
     title: "TypeScriptの型を理解する",
@@ -24,10 +24,28 @@ const tasks: Task[] = [
   },
 ];
 
+const tasks: Task[] = loadTasks(initialTasks);
+
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (app === null) {
   throw new Error("#app が見つかりません。");
+}
+
+function saveTasks(taskList: Task[]): void {
+  const taskListJson = JSON.stringify(taskList);
+  localStorage.setItem("tasks", taskListJson);
+}
+
+function loadTasks(defaultTasks: Task[]): Task[] {
+  const savedTasksJson = localStorage.getItem("tasks");
+
+  if (savedTasksJson === null) {
+    return defaultTasks;
+  }
+
+  const savedTasks = JSON.parse(savedTasksJson) as Task[];
+  return savedTasks;
 }
 
 function deleteTask(taskId: string): void {
@@ -38,6 +56,7 @@ function deleteTask(taskId: string): void {
   }
 
   tasks.splice(taskIndex, 1);
+  saveTasks(tasks);
   renderTasks(tasks);
 }
 
@@ -67,6 +86,7 @@ function createTaskElement(task: Task): HTMLLIElement {
 
   item.addEventListener("click", () => {
     task.done = !task.done;
+    saveTasks(tasks);
     renderTasks(tasks);
   });
 
@@ -132,6 +152,7 @@ taskForm.addEventListener("submit", (event) => {
   };
 
   tasks.push(newTask);
+  saveTasks(tasks);
   renderTasks(tasks);
 
   taskInput.value = "";
