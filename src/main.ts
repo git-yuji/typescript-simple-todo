@@ -3,6 +3,9 @@ import type { Task } from "./task.ts";
 
 // Task[] は「Task型の値だけを入れられる配列」という意味です。
 // 保存データがない場合は、次の初期タスクを表示します。
+
+type TaskFilter = "all" | "active" | "completed";
+
 const initialTasks: Task[] = [
   {
     id: "1",
@@ -25,6 +28,8 @@ const initialTasks: Task[] = [
 ];
 
 const tasks: Task[] = loadTasks(initialTasks);
+
+let currentFilter: TaskFilter = "all";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -93,6 +98,18 @@ function createTaskElement(task: Task): HTMLLIElement {
   return item;
 }
 
+function getFilteredTasks(taskList: Task[]): Task[] {
+  if (currentFilter === "active") {
+    return taskList.filter((task) => !task.done);
+  }
+
+  if (currentFilter === "completed") {
+    return taskList.filter((task) => task.done);
+  }
+
+  return taskList;
+}
+
 function renderTasks(taskList: Task[]): void {
   const list = document.querySelector<HTMLUListElement>("#task-list");
   const count = document.querySelector<HTMLSpanElement>("#task-count");
@@ -101,8 +118,10 @@ function renderTasks(taskList: Task[]): void {
     throw new Error("タスクの表示先が見つかりません。");
   }
 
-  list.replaceChildren(...taskList.map(createTaskElement));
-  count.textContent = `${taskList.length}件`;
+  const filteredTasks = getFilteredTasks(taskList);
+
+  list.replaceChildren(...filteredTasks.map(createTaskElement));
+  count.textContent = `${filteredTasks.length}件`;
 }
 
 app.innerHTML = `
@@ -120,6 +139,12 @@ app.innerHTML = `
       <button type="submit">追加</button>
     </form>
 
+    <div class="task-filters" aria-label="タスクの絞り込み">
+      <button type="button" class="is-active" data-filter="all">すべて</button>
+      <button type="button" data-filter="active">未完了</button>
+      <button type="button" data-filter="completed">完了</button>
+    </div>
+
     <section class="task-section" aria-labelledby="task-heading">
       <div class="section-heading">
         <h2 id="task-heading">タスク一覧</h2>
@@ -132,9 +157,32 @@ app.innerHTML = `
 
 const taskForm = document.querySelector<HTMLFormElement>(".task-form");
 const taskInput = document.querySelector<HTMLInputElement>("#task-input");
+const filterButtons = document.querySelectorAll<HTMLButtonElement>(
+  ".task-filters button",
+);
 if (taskForm === null || taskInput === null) {
   throw new Error("フォームまたは入力欄が見つかりません。");
 }
+
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const filter = button.dataset.filter;
+
+    if (filter !== "all" && filter !== "active" && filter !== "completed") {
+      return;
+    }
+
+    currentFilter = filter;
+
+    filterButtons.forEach((filterButton) => {
+      const isSelected = filterButton === button;
+
+      filterButton.classList.toggle("is-active", isSelected);
+    });
+
+    renderTasks(tasks);
+  });
+});
 
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
