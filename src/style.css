@@ -36,6 +36,66 @@ body {
   border-bottom: 1px solid #dce5df;
 }
 
+.task-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.task-form input {
+  min-width: 0;
+  flex: 1;
+  padding: 13px 16px;
+  color: #1d2a27;
+  background: #fff;
+  border: 1px solid #cfdad4;
+  border-radius: 12px;
+  font: inherit;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.task-form input::placeholder {
+  color: #96a29e;
+}
+
+.task-form input:focus {
+  border-color: #177a5b;
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(23 122 91 / 16%);
+}
+
+.task-form button {
+  flex: 0 0 auto;
+  padding: 13px 20px;
+  color: #fff;
+  background: #177a5b;
+  border: 1px solid #177a5b;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.task-form button:hover {
+  background: #116348;
+  border-color: #116348;
+}
+
+.task-form button:active {
+  transform: translateY(1px);
+}
+
+.task-form button:focus-visible {
+  outline: 3px solid rgb(23 122 91 / 22%);
+  outline-offset: 2px;
+}
+
 .eyebrow {
   margin: 0 0 6px;
   color: #177a5b;
@@ -64,6 +124,45 @@ h1 {
 
 .task-section {
   padding-top: 26px;
+}
+
+.task-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.task-filters button {
+  padding: 8px 14px;
+  color: #687773;
+  background: transparent;
+  border: 1px solid #dce5df;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.task-filters button:hover {
+  color: #177a5b;
+  background: #edf7f2;
+  border-color: #9fc9b9;
+}
+
+.task-filters button.is-active {
+  color: #fff;
+  background: #177a5b;
+  border-color: #177a5b;
+}
+
+.task-filters button:focus-visible {
+  outline: 3px solid rgb(23 122 91 / 22%);
+  outline-offset: 2px;
 }
 
 .section-heading {
@@ -163,5 +262,10 @@ h1 {
   .app {
     padding: 28px 20px;
     border-radius: 20px;
+  }
+
+  .task-form {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
