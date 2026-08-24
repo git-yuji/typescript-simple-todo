@@ -28,5 +28,8 @@ jobs:
       - name: 依存関係をインストール
         run: npm ci
 
+      - name: テスト
+        run: npm test
+
       - name: ビルド
         run: npm run build

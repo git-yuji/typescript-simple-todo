@@ -1,10 +1,13 @@
 import "./style.css";
 import type { Task } from "./task.ts";
+import {
+  getFilteredTasks,
+  type TaskFilter,
+  updateTaskTitle,
+} from "./task-utils.ts";
 
 // Task[] は「Task型の値だけを入れられる配列」という意味です。
 // 保存データがない場合は、次の初期タスクを表示します。
-
-type TaskFilter = "all" | "active" | "completed";
 
 const initialTasks: Task[] = [
   {
@@ -65,20 +68,11 @@ function deleteTask(taskId: string): void {
   renderTasks(tasks);
 }
 
-function updateTaskTitle(taskId: string, editedTitle: string): boolean {
-  const task = tasks.find((task) => task.id === taskId);
-
-  if (task === undefined) {
+function saveTaskTitle(taskId: string, editedTitle: string): boolean {
+  if (!updateTaskTitle(tasks, taskId, editedTitle)) {
     return false;
   }
 
-  const title = editedTitle.trim();
-
-  if (title === "") {
-    return false;
-  }
-
-  task.title = title;
   saveTasks(tasks);
   renderTasks(tasks);
   return true;
@@ -138,7 +132,7 @@ function createTaskElement(task: Task): HTMLLIElement {
       formEvent.preventDefault();
       formEvent.stopPropagation();
 
-      if (!updateTaskTitle(task.id, editInput.value)) {
+      if (!saveTaskTitle(task.id, editInput.value)) {
         editInput.setCustomValidity("タスク名を入力してください。");
         editInput.reportValidity();
       }
@@ -194,18 +188,6 @@ function createTaskElement(task: Task): HTMLLIElement {
   return item;
 }
 
-function getFilteredTasks(taskList: Task[]): Task[] {
-  if (currentFilter === "active") {
-    return taskList.filter((task) => !task.done);
-  }
-
-  if (currentFilter === "completed") {
-    return taskList.filter((task) => task.done);
-  }
-
-  return taskList;
-}
-
 function renderTasks(taskList: Task[]): void {
   const list = document.querySelector<HTMLUListElement>("#task-list");
   const count = document.querySelector<HTMLSpanElement>("#task-count");
@@ -214,7 +196,7 @@ function renderTasks(taskList: Task[]): void {
     throw new Error("タスクの表示先が見つかりません。");
   }
 
-  const filteredTasks = getFilteredTasks(taskList);
+  const filteredTasks = getFilteredTasks(taskList, currentFilter);
 
   list.replaceChildren(...filteredTasks.map(createTaskElement));
   count.textContent = `${filteredTasks.length}件`;
