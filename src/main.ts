@@ -65,6 +65,25 @@ function deleteTask(taskId: string): void {
   renderTasks(tasks);
 }
 
+function updateTaskTitle(taskId: string, editedTitle: string): boolean {
+  const task = tasks.find((task) => task.id === taskId);
+
+  if (task === undefined) {
+    return false;
+  }
+
+  const title = editedTitle.trim();
+
+  if (title === "") {
+    return false;
+  }
+
+  task.title = title;
+  saveTasks(tasks);
+  renderTasks(tasks);
+  return true;
+}
+
 function createTaskElement(task: Task): HTMLLIElement {
   const item = document.createElement("li");
   item.className = task.done ? "task task--done" : "task";
@@ -77,6 +96,79 @@ function createTaskElement(task: Task): HTMLLIElement {
   title.className = "task__title";
   title.textContent = task.title;
 
+  const editButton = document.createElement("button");
+  editButton.className = "task__edit";
+  editButton.type = "button";
+  editButton.textContent = "編集";
+
+  editButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    item.classList.add("task--editing");
+
+    const editForm = document.createElement("form");
+    editForm.className = "task__edit-form";
+
+    const editInput = document.createElement("input");
+    editInput.className = "task__edit-input";
+    editInput.type = "text";
+    editInput.value = task.title;
+    editInput.setAttribute("aria-label", "タスク名を編集");
+
+    const saveButton = document.createElement("button");
+    saveButton.className = "task__save";
+    saveButton.type = "submit";
+    saveButton.textContent = "保存";
+
+    const cancelButton = document.createElement("button");
+    cancelButton.className = "task__cancel";
+    cancelButton.type = "button";
+    cancelButton.textContent = "キャンセル";
+
+    editForm.append(editInput, saveButton, cancelButton);
+    title.replaceWith(editForm);
+    editButton.hidden = true;
+    deleteButton.hidden = true;
+
+    editForm.addEventListener("click", (formEvent) => {
+      formEvent.stopPropagation();
+    });
+
+    editForm.addEventListener("submit", (formEvent) => {
+      formEvent.preventDefault();
+      formEvent.stopPropagation();
+
+      if (!updateTaskTitle(task.id, editInput.value)) {
+        editInput.setCustomValidity("タスク名を入力してください。");
+        editInput.reportValidity();
+      }
+    });
+
+    const cancelEditing = (): void => {
+      editForm.replaceWith(title);
+      editButton.hidden = false;
+      deleteButton.hidden = false;
+      item.classList.remove("task--editing");
+      editButton.focus();
+    };
+
+    cancelButton.addEventListener("click", cancelEditing);
+
+    editInput.addEventListener("input", () => {
+      editInput.setCustomValidity("");
+    });
+
+    editInput.addEventListener("keydown", (keyboardEvent) => {
+      if (keyboardEvent.key === "Escape") {
+        keyboardEvent.preventDefault();
+        cancelEditing();
+      }
+    });
+
+    editInput.focus();
+    editInput.select();
+  });
+
   const deleteButton = document.createElement("button");
   deleteButton.className = "task__delete";
   deleteButton.type = "button";
@@ -87,9 +179,13 @@ function createTaskElement(task: Task): HTMLLIElement {
     deleteTask(task.id);
   });
 
-  item.append(mark, title, deleteButton);
+  item.append(mark, title, editButton, deleteButton);
 
   item.addEventListener("click", () => {
+    if (item.classList.contains("task--editing")) {
+      return;
+    }
+
     task.done = !task.done;
     saveTasks(tasks);
     renderTasks(tasks);

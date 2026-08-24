@@ -205,11 +205,37 @@ h1 {
   flex: 1;
 }
 
+.task__edit-form {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  gap: 8px;
+}
+
+.task__edit-input {
+  min-width: 0;
+  flex: 1;
+  padding: 7px 10px;
+  color: #1d2a27;
+  background: #fff;
+  border: 1px solid #8fc1cb;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.task__edit-input:focus {
+  border-color: #286b78;
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(40 107 120 / 16%);
+}
+
+.task__edit,
+.task__save,
+.task__cancel,
 .task__delete {
   padding: 7px 10px;
-  color: #a3483f;
   background: transparent;
-  border: 1px solid #e4c7c2;
+  border: 1px solid;
   border-radius: 8px;
   font: inherit;
   font-size: 0.78rem;
@@ -218,6 +244,49 @@ h1 {
     color 160ms ease,
     background-color 160ms ease,
     border-color 160ms ease;
+}
+
+.task__edit {
+  color: #286b78;
+  border-color: #bdd9df;
+}
+
+.task__save {
+  color: #fff;
+  background: #177a5b;
+  border-color: #177a5b;
+}
+
+.task__save:hover {
+  background: #116348;
+  border-color: #116348;
+}
+
+.task__cancel {
+  color: #687773;
+  border-color: #cfdad4;
+}
+
+.task__cancel:hover {
+  color: #1d2a27;
+  background: #f2f5ef;
+  border-color: #aebdb7;
+}
+
+.task__edit:hover {
+  color: #1d5661;
+  background: #edf8fa;
+  border-color: #8fc1cb;
+}
+
+.task__edit:focus-visible {
+  outline: 3px solid rgb(40 107 120 / 22%);
+  outline-offset: 2px;
+}
+
+.task__delete {
+  color: #a3483f;
+  border-color: #e4c7c2;
 }
 
 .task__delete:hover {
@@ -267,5 +336,17 @@ h1 {
   .task-form {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .task--editing {
+    align-items: flex-start;
+  }
+
+  .task__edit-form {
+    flex-wrap: wrap;
+  }
+
+  .task__edit-input {
+    flex-basis: 100%;
   }
 }
